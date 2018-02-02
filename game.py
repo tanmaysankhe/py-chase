@@ -8,9 +8,13 @@ pygame.init()
 
 display_width =800
 display_height =600
+object_size = 67
 
 black = (0,0,0)
 white = (255,255,255)
+red = (255,0,0)
+green = (0,255,0)
+blue = (0,0,255)
 
 carImage1 = pygame.image.load('aaa.png')
 carImage2 = pygame.image.load('bbb.png')
@@ -19,11 +23,102 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Game')
 clock = pygame.time.Clock()
 
-def car1(x,y):
-	gameDisplay.blit(carImage1,(x,y))
 
-def car2(x,y):
-	gameDisplay.blit(carImage2,(x,y))
+###########################################
+
+
+def button(msg,x,y,w,h,c,action=None):
+		
+	pygame.draw.rect(gameDisplay,c,(x,y,w,h))
+	# pygame.draw.rect(gameDisplay,green,(250,450,100,50))
+	# pygame.draw.rect(gameDisplay,red,(450,450,100,50))
+
+	mouse = pygame.mouse.get_pos()
+
+	click = pygame.mouse.get_pressed()
+
+	if(mouse[0] > x and mouse[0] < x+100):
+		if(mouse[1] > y and mouse[1] < y+50):
+			pygame.draw.rect(gameDisplay,blue,(x,y,w,h))
+			if click[0] == 1:
+				if action == 'play':
+					gameLoop()
+				if action == 'quit':
+					pygame.quit()
+					quit()
+
+	# if (450 < mouse[0] < 550 and 450 < mouse[1] < 500):
+	# 	pygame.draw.rect(gameDisplay,blue,(450,450,100,50))					
+
+	smallText = pygame.font.Font('freesansbold.ttf',20)
+
+	TextSurf, TextRect = text_objects(msg, smallText)
+	TextRect.center = ((x+50,y+28))
+	gameDisplay.blit(TextSurf, TextRect)		
+
+
+def timer(count):
+	font = pygame.font.SysFont(None,25)
+	text = font.render("Dodged:" + str(count),True,red)
+	gameDisplay.blit(text,(0,0))
+
+
+
+
+def car(x,y):
+	gameDisplay.blit(carImg,(x,y))
+
+def crash():
+	message_display("Tom wins")
+
+
+def game_intro():
+	intro = True
+	while intro:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				quit()
+		gameDisplay.fill(white)
+		largeText = pygame.font.Font('freesansbold.ttf',115)
+		TextSurf, TextRect = text_objects("The Chase", largeText)
+		TextRect.center = ((display_width/2),(display_height/2))
+		gameDisplay.blit(TextSurf, TextRect)
+		
+		
+		#button(msg,x,y,w,h,c):
+		button("Start",250,450,100,50,green,'play')
+		button("Exit",450,450,100,50,red,'quit')
+
+
+		pygame.display.update()
+		clock.tick(60)
+
+
+
+def message_display(text):
+	largeText = pygame.font.Font('freesansbold.ttf',115)
+	TextSurf, TextRect = text_objects(text, largeText)
+	TextRect.center = ((display_width/2),(display_height/2))
+	gameDisplay.blit(TextSurf, TextRect)
+	pygame.display.update()
+	time.sleep(2)
+
+	game_intro()
+
+def text_objects(text, font):
+	textSurface = font.render(text, True, black)
+	return textSurface, textSurface.get_rect()
+
+
+###########################################
+
+
+
+
+
+def car(img,x,y):
+	gameDisplay.blit(img,(x,y))
 
 
 
@@ -39,7 +134,7 @@ def gameLoop():
 
 	x_changeB = 0
 	y_changeB = 0
-
+	i = 0
 
 	game_exit = False
 
@@ -89,13 +184,19 @@ def gameLoop():
 		x1 += x_changeB
 		y1 += y_changeB
 
+		
+		if( x1 < x < x1+object_size or x1 < x+object_size < x1+object_size):
+			if(y1 < y < y1+object_size or y1 < y+object_size < y1+object_size):
+				#print("crash",i)
+				#i+=1
+				crash()
 
 		gameDisplay.fill(black)
-		car1(x,y)
-		car2(x1,y1)
+		car(carImage1,x,y)
+		car(carImage2,x1,y1)
 		pygame.display.flip()
 		clock.tick(60)
 
-gameLoop()
+game_intro()
 pygame.quit()
 quit()
