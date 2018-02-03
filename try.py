@@ -1,5 +1,17 @@
-x = 2
-def aa():
-	print("ss",x)
+import time
+from threading import Thread 
 
-aa()
+seconds = 60
+def timeCount():
+	global seconds
+	while(seconds > 0):
+		print("seconds", seconds)
+		time.sleep(1)
+		seconds -= 1
+
+def avi():
+	print("time")
+
+
+Thread(target = timeCount).start()
+avi()

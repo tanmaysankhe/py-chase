@@ -46,8 +46,6 @@ y_changeB = 0
 
 
 
-
-
 def gameA():
 	global x,y,x_changeA,x_changeB,x1,y1,y_changeB,y_changeA
 	for event in pygame.event.get():
@@ -79,10 +77,10 @@ def gameA():
 
 
 
-	gameDisplay.fill(black)
+	#gameDisplay.fill(black)
 	car(carImage1,x,y)
-	pygame.display.flip()
-	clock.tick(60)
+	##pygame.display.flip()
+	#clock.tick(60)
 
 
 
@@ -91,6 +89,7 @@ def gameA():
 def gameB():
 	global x,y,x_changeA,x_changeB,x1,y1,y_changeB,y_changeA
 	for event in pygame.event.get():
+		print(event)
 		if(event.type == pygame.QUIT):
 			pygame.quit()
 			quit()
@@ -119,10 +118,10 @@ def gameB():
 	y1 += y_changeB
 
 
-	gameDisplay.fill(black)
+	#gameDisplay.fill(black)
 	car(carImage2,x1,y1)
-	pygame.display.flip()
-	clock.tick(60)
+	#pygame.display.flip()
+	#clock.tick(60)
 
 ##################################	
 
@@ -135,10 +134,17 @@ def gameLoop():
 	game_exit = False
 
 	while not game_exit:
-
+		gameDisplay.fill(black)
+		#gameB()
+		#gameA()
 		Thread(target = gameA).start()
+		Thread(target = gameB).start()
 
-    	#Thread(target = gameB).start()
+
+
+		pygame.display.flip()
+		clock.tick(60)
+    	
 
 
 gameLoop()

@@ -1,6 +1,6 @@
 import pygame
 import time
-
+from threading import Thread
 
 pygame.init()
 
@@ -15,6 +15,8 @@ white = (255,255,255)
 red = (255,0,0)
 green = (0,255,0)
 blue = (0,0,255)
+seconds = 0
+
 
 carImage1 = pygame.image.load('aaa.png')
 carImage2 = pygame.image.load('bbb.png')
@@ -25,6 +27,19 @@ clock = pygame.time.Clock()
 
 
 ###########################################
+def timeCount():
+	global seconds
+	while(seconds > 0):
+		#print(seconds)
+		time.sleep(1)
+		seconds += 1
+
+
+
+def jerrywins():
+	message_display("Jerry Wins")
+
+
 
 
 def button(msg,x,y,w,h,c,action=None):
@@ -42,7 +57,9 @@ def button(msg,x,y,w,h,c,action=None):
 			pygame.draw.rect(gameDisplay,blue,(x,y,w,h))
 			if click[0] == 1:
 				if action == 'play':
+					
 					gameLoop()
+
 				if action == 'quit':
 					pygame.quit()
 					quit()
@@ -59,7 +76,7 @@ def button(msg,x,y,w,h,c,action=None):
 
 def timer(count):
 	font = pygame.font.SysFont(None,25)
-	text = font.render("Dodged:" + str(count),True,red)
+	text = font.render("Time:" + str(count),True,red)
 	gameDisplay.blit(text,(0,0))
 
 
@@ -68,7 +85,7 @@ def timer(count):
 def car(x,y):
 	gameDisplay.blit(carImg,(x,y))
 
-def crash():
+def tomwins():
 	message_display("Tom wins")
 
 
@@ -189,11 +206,33 @@ def gameLoop():
 			if(y1 < y < y1+object_size or y1 < y+object_size < y1+object_size):
 				#print("crash",i)
 				#i+=1
-				crash()
+				tomwins()
 
-		gameDisplay.fill(black)
+		if (x < 5 or x+object_size > 795 or y < 20 or y+object_size > 595):
+			jerrywins()		
+
+
+		if (x1 < 5 or x1+object_size > 795 or y1 < 20 or y1+object_size > 595):
+			tomwins()		
+
+
+		if(seconds > 10000):
+			jerrywins()
+
+
+		gameDisplay.fill(white)
+
+		#borders
+		pygame.draw.line(gameDisplay,red,(5,20),(5,595),1)
+		pygame.draw.line(gameDisplay,red,(5,20),(795,20),1)
+		pygame.draw.line(gameDisplay,red,(795,20),(795,595),1)
+		pygame.draw.line(gameDisplay,red,(5,595),(795,595),1)
+
 		car(carImage1,x,y)
 		car(carImage2,x1,y1)
+
+		Thread(target = timeCount).start()
+		timer(seconds)
 		pygame.display.flip()
 		clock.tick(60)
 
