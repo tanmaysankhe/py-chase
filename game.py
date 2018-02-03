@@ -15,14 +15,14 @@ white = (255,255,255)
 red = (255,0,0)
 green = (0,255,0)
 blue = (0,0,255)
-seconds = 0
+seconds = 1
 
 
-carImage1 = pygame.image.load('aaa.png')
-carImage2 = pygame.image.load('bbb.png')
+tom = pygame.image.load('Images/tom.png')
+jerry = pygame.image.load('Images/jerry.png')
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption('Game')
+pygame.display.set_caption('The Chase')
 clock = pygame.time.Clock()
 
 
@@ -33,7 +33,7 @@ def timeCount():
 		#print(seconds)
 		time.sleep(1)
 		seconds += 1
-
+		print(seconds)
 
 
 def jerrywins():
@@ -90,6 +90,7 @@ def tomwins():
 
 
 def game_intro():
+	#t.stop()
 	intro = True
 	while intro:
 		for event in pygame.event.get():
@@ -140,10 +141,10 @@ def car(img,x,y):
 
 
 def gameLoop():
-	x = (display_width * 0.45)
+	x = (display_width * 0.3) - object_size
 	y = (display_height * 0.8)
 
-	x1 = (display_width * 0.65)
+	x1 = (display_width * 0.7)
 	y1 = (display_height * 0.8)
 
 	x_changeA = 0
@@ -159,6 +160,7 @@ def gameLoop():
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
 				pygame.quit()
+				t.stop()
 				quit()
 
 			if event.type == pygame.KEYDOWN:
@@ -206,6 +208,7 @@ def gameLoop():
 			if(y1 < y < y1+object_size or y1 < y+object_size < y1+object_size):
 				#print("crash",i)
 				#i+=1
+				
 				tomwins()
 
 		if (x < 5 or x+object_size > 795 or y < 20 or y+object_size > 595):
@@ -228,14 +231,15 @@ def gameLoop():
 		pygame.draw.line(gameDisplay,red,(795,20),(795,595),1)
 		pygame.draw.line(gameDisplay,red,(5,595),(795,595),1)
 
-		car(carImage1,x,y)
-		car(carImage2,x1,y1)
+		car(tom,x,y)
+		car(jerry,x1,y1)
 
-		Thread(target = timeCount).start()
+		#t = Thread(target = timeCount).start()
 		timer(seconds)
 		pygame.display.flip()
 		clock.tick(60)
 
 game_intro()
+
 pygame.quit()
 quit()
